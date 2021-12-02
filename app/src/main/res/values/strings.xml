@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Trip Management App</string>
+    <string name="home">Home</string>
+    <string name="trips">Trips</string>
+    <string name="total_trips">Total Trips</string>
+    <string name="distance_traveled">Distance Traveled</string>
+    <string name="travel_time">Travel Time</string>
+    <string name="user_intro">Hi, User</string>
+    <string name="trip_indicator">Trip Indicator</string>
+    <string name="auto_capture">Auto - Monitor Trips</string>
+    <string name="empty_list">No trips found.</string>
 </resources>
