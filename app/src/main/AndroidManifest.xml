@@ -3,6 +3,8 @@
     package="io.sahil.tripmanagementapp">
 
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TripManagementApp">
         <activity
-            android:name=".activity.MainActivity"
+            android:name="io.sahil.tripmanagementapp.ui.activity.MainActivity"
             android:exported="true"
             android:screenOrientation="nosensor">
             <intent-filter>
@@ -20,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".ui.services.ForegroundService"
+            android:foregroundServiceType="location"/>
     </application>
 
 </manifest>

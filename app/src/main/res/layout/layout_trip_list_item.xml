@@ -5,7 +5,7 @@
 
         <variable
             name="trip"
-            type="io.sahil.tripmanagementapp.data.Trip" />
+            type="io.sahil.tripmanagementapp.data.TripModel" />
 
     </data>
 
@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/CardView.Light"
         android:layout_margin="@dimen/_8sdp"
-        app:cardElevation="@dimen/_2sdp"
+        app:cardElevation="@dimen/_4sdp"
         app:cardCornerRadius="@dimen/_2sdp">
 
         <androidx.constraintlayout.widget.ConstraintLayout

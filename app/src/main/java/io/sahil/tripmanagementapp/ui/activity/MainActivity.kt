@@ -1,13 +1,13 @@
-package io.sahil.tripmanagementapp.activity
+package io.sahil.tripmanagementapp.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.navigation.NavigationBarView
 import io.sahil.tripmanagementapp.R
 import io.sahil.tripmanagementapp.databinding.ActivityMainBinding
+import io.sahil.tripmanagementapp.ui.fragments.HomeFragment
+import io.sahil.tripmanagementapp.ui.fragments.TripsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,30 +17,35 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         initBottomNavView()
-
+        initViews()
 
     }
 
 
     private fun initViews(){
-        //attach fragment
+        supportFragmentManager.beginTransaction()
+            .add(R.id.main_frame, HomeFragment(), HomeFragment::class.java.simpleName)
+            .commit()
     }
 
 
 
     private fun initBottomNavView(){
-        activityMainBinding.bottomNavBar.setOnItemSelectedListener(object : NavigationBarView.OnItemSelectedListener{
-            override fun onNavigationItemSelected(item: MenuItem): Boolean {
-                when(item.itemId){
+        activityMainBinding.bottomNavBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
 
-                    R.id.home -> goBack()
+                R.id.nav_home -> supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
-                    R.id.trips -> {}//attach trip fragment
-
+                R.id.nav_trips -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frame, TripsFragment(), TripsFragment::class.java.simpleName)
+                        .addToBackStack(TripsFragment::class.java.simpleName)
+                        .commit()
                 }
-                return true
+
             }
-        })
+            true
+        }
     }
 
     private fun goBack(){
@@ -48,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             //Trip fragment is attached
             //Pop the fragment
             supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            activityMainBinding.bottomNavBar.selectedItemId = R.id.home
+            activityMainBinding.bottomNavBar.selectedItemId = R.id.nav_home
         }
     }
 

@@ -8,12 +8,8 @@
             type="android.graphics.drawable.Drawable" />
 
         <variable
-            name="tripButton"
+            name="tripButtonText"
             type="String" />
-
-        <variable
-            name="autoMode"
-            type="Boolean" />
 
         <import type="android.view.View"/>
         
@@ -45,16 +41,23 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent" />
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/user_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:id="@+id/trip_indicator_layout"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
     
     <ImageView
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_100sdp"
         android:id="@+id/trip_indicator"
         android:src="@{tripStatusDrawable}"
-        app:layout_constraintTop_toBottomOf="@id/user_status"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:contentDescription="@string/trip_indicator"
         />
     
@@ -63,48 +66,17 @@
         android:layout_width="@dimen/_100sdp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_30sdp"
-        android:text="@{tripButton}"
+        android:text="@{tripButtonText}"
         android:gravity="center"
+        android:id="@+id/trip_button"
         android:textColor="@color/white"
         android:background="@drawable/ripple_color_primary"
         android:paddingVertical="@dimen/_8sdp"
         android:paddingHorizontal="@dimen/_10sdp"
-        app:layout_constraintTop_toBottomOf="@id/trip_indicator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:textSize="@dimen/_13sdp"
-        android:visibility="@{autoMode ? View.GONE : View.VISIBLE}"
         />
 
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/user_status"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/trip_indicator"
-        android:orientation="horizontal"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/auto_capture"
-            android:textColor="@color/textSecondary"
-            android:textSize="@dimen/_11sdp"
-            android:layout_marginEnd="@dimen/_4sdp"
-            />
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/auto_switch"
-        android:checked="@{autoMode}"
-        />
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

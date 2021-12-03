@@ -7,9 +7,6 @@
             name="totalTrips"
             type="String" />
 
-        <!--<variable
-            name="totalDistance"
-            type="String" />-->
 
         <variable
             name="totalTime"
@@ -47,7 +44,6 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
@@ -57,6 +53,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{totalTrips}"
                     android:textSize="@dimen/_13sdp"
+                    android:layout_marginBottom="@dimen/_4sdp"
                     android:textColor="@color/textPrimary"
                     />
 
@@ -70,37 +67,9 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginBottom="@dimen/_2sdp"
-                android:gravity="center"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{totalDistance}"
-                    android:textSize="@dimen/_13sdp"
-                    android:textColor="@color/textPrimary"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_11sdp"
-                    android:textColor="@color/textSecondary"
-                    android:text="@string/distance_traveled"
-                    />
-
-            </LinearLayout>-->
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_marginBottom="@dimen/_2sdp"
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -111,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{totalTime}"
                     android:textSize="@dimen/_13sdp"
+                    android:layout_marginBottom="@dimen/_4sdp"
                     android:textColor="@color/textPrimary"
                     />
 

@@ -5,4 +5,8 @@ data class LocationModel(
     val longitude: Double,
     val timeStamp: String,
     val accuracy: Double
-)
+){
+    override fun toString(): String {
+        return "Lat: $latitude, Lng: $longitude, timestamp: $timeStamp, accuracy: $accuracy"
+    }
+}

@@ -1,7 +1,6 @@
 package io.sahil.tripmanagementapp.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 
 class MyPreferences(private val context: Context) {
 
@@ -9,15 +8,27 @@ class MyPreferences(private val context: Context) {
 
     private val TOTAL_TIME = "TOTAL_TIME"
     private val TOTAL_TRIPS = "TOTAL_TRIPS"
+    private val IS_TRIP_RUNNING = "IS_TRIP_RUNNING"
 
-    fun saveTotalTime(timeInMilliSec: Long){
+   /* fun addTripTimeToTotal(timeInMilliSec: Long){
+        val currentTotal  = getTotalTime()
         val editor = sharedPreferences.edit()
-        editor.putLong(TOTAL_TIME, timeInMilliSec)
+        editor.putLong(TOTAL_TIME, currentTotal + timeInMilliSec)
         editor.apply()
     }
 
     fun getTotalTime(): Long{
         return sharedPreferences.getLong(TOTAL_TIME, 0)
+    }*/
+
+    fun saveIsTripRunning(isTripRunning: Boolean){
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(IS_TRIP_RUNNING, isTripRunning)
+        editor.apply()
+    }
+
+    fun getIsTripRunning(): Boolean{
+        return sharedPreferences.getBoolean(IS_TRIP_RUNNING, false)
     }
 
 
