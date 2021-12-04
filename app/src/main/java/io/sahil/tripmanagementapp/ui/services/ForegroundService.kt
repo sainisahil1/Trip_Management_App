@@ -1,14 +1,11 @@
 package io.sahil.tripmanagementapp.ui.services
 
 import android.Manifest
-import android.app.Notification
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.os.IBinder
 import android.os.Build
-import android.app.NotificationManager
 
-import android.app.NotificationChannel
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
@@ -30,6 +27,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import io.sahil.tripmanagementapp.R
+import android.graphics.BitmapFactory
+
+import androidx.core.app.NotificationCompat
+
+import io.sahil.tripmanagementapp.ui.activity.MainActivity
+import androidx.core.app.NotificationManagerCompat
+
+
+
+
+
+
+
 
 
 class ForegroundService: Service() {
@@ -39,6 +50,7 @@ class ForegroundService: Service() {
     }
 
     private val NOTIFICATION_ID = 1000
+    private val PENDING_INTENT_REQUEST_CODE = 1001
     private val CHANNEL_NAME = "TRIP_CHANNEL"
     private val CHANNEL_ID = "TRIP_CHANNEL_ID"
 
@@ -69,23 +81,73 @@ class ForegroundService: Service() {
     }
 
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun getNotification(): Notification {
-        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
-        val builder = Notification.Builder(applicationContext, CHANNEL_ID).setAutoCancel(true)
-        return builder.build()
-    }
-
     private fun showForegroundNotification(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForeground(NOTIFICATION_ID, getNotification())
+            createNotificationChannel(CHANNEL_ID, CHANNEL_NAME)
         } else {
-            startForeground(NOTIFICATION_ID, Notification())
+            val intent = Intent(this, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(
+                this,
+                PENDING_INTENT_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            val builder = NotificationCompat.Builder(this)
+
+            val bigTextStyle = NotificationCompat.BigTextStyle()
+            bigTextStyle.bigText("Trip running..")
+            bigTextStyle.setBigContentTitle("Trip Management App")
+
+            builder.setStyle(bigTextStyle)
+            builder.setOngoing(true)
+            // builder.setOnlyAlertOnce(true); //to quietly update the notification
+            // builder.setOnlyAlertOnce(true); //to quietly update the notification
+            builder.setWhen(System.currentTimeMillis())
+            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+            builder.setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    R.mipmap.ic_launcher_round
+                )
+            )
+            builder.priority = Notification.PRIORITY_HIGH
+            builder.setFullScreenIntent(pendingIntent, true)
+
+            val notification = builder.build()
+            startForeground(NOTIFICATION_ID, notification)
+
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelID: String, channelName: String) {
+        val resultIntent = Intent(this, MainActivity::class.java)
+        val taskStackBuilder: TaskStackBuilder = TaskStackBuilder.create(this)
+        taskStackBuilder.addNextIntentWithParentStack(resultIntent)
+        val pendingIntent: PendingIntent = taskStackBuilder.getPendingIntent(
+            PENDING_INTENT_REQUEST_CODE,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val notificationChannel =
+            NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+        notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        val notificationManager = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
+        notificationManager.createNotificationChannel(notificationChannel)
+        val notificationBuilder = NotificationCompat.Builder(this, channelID)
+        val notification: Notification = notificationBuilder.setOngoing(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("Trip Management App")
+            .setContentText("Trip running..")
+            .setPriority(NotificationManager.IMPORTANCE_HIGH)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentIntent(pendingIntent)
+            .build()
+        val notificationManagerCompat = NotificationManagerCompat.from(this)
+        notificationManagerCompat.notify(NOTIFICATION_ID, notificationBuilder.build())
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
 
     private val tag = ForegroundService::class.java.simpleName
 
@@ -96,7 +158,7 @@ class ForegroundService: Service() {
             val locationRequest = LocationRequest.create().apply {
                 interval = 5000
                 fastestInterval = 5000
-                smallestDisplacement = 2000F
+                smallestDisplacement = 2F
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             }
             fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())

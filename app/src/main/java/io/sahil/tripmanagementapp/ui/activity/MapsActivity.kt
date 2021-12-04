@@ -66,7 +66,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 routeList.add(LatLng(location.latitude, location.longitude))
             }
             polyLineOptions.addAll(routeList)
-            polyLineOptions.width(6F)
+            polyLineOptions.width(7F)
             polyLineOptions.color(getColor(R.color.colorAccent))
             mMap.addPolyline(polyLineOptions)
 
