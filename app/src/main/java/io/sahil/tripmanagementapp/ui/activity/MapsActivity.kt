@@ -1,12 +1,15 @@
 package io.sahil.tripmanagementapp.ui.activity
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,8 +24,7 @@ import io.sahil.tripmanagementapp.ui.viewmodels.MapsViewModel
 import io.sahil.tripmanagementapp.utils.MyUtils
 import java.lang.Exception
 import com.google.android.gms.maps.model.LatLng
-
-
+import java.io.File
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -104,11 +106,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.toolbar.title = "Trip $tripId"
         binding.toolbar.export = "Export"
         binding.toolbar.backButton.setOnClickListener { finish() }
-        binding.toolbar.exportTrip.setOnClickListener {
-            tripModel?.let {
-                //export function
-            } ?: Toast.makeText(applicationContext, "Loading Trip. Please Wait.", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun initGoogleMap(){
@@ -127,12 +124,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         })
         mapsViewModel.toastLiveData.observe(this, {
             it?.let {
-                Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "File saved at: $it", Toast.LENGTH_LONG).show()
+                val file = File(it)
+                if (file.exists()){
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "application/json"
+                    intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(applicationContext, "$packageName.provider", file))
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Share file")
+                    startActivity(Intent.createChooser(intent, "Share File"))
+                }
             }
         })
         mapsViewModel.fetchTrip(tripId)
         binding.toolbar.exportTrip.setOnClickListener {
-            //requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             export()
         }
     }
@@ -142,14 +148,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 model -> mapsViewModel.exportTrip(model)
         } ?: Toast.makeText(applicationContext, "Loading trip", Toast.LENGTH_SHORT).show()
     }
-/*
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()){ isGranted ->
-        if (isGranted){
-            export()
-        } else {
-            Toast.makeText(applicationContext, "Please provide storage permission", Toast.LENGTH_SHORT).show()
-        }
-    }*/
+
 
 }

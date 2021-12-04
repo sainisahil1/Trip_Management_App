@@ -1,12 +1,16 @@
 package io.sahil.tripmanagementapp.ui.fragments
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +21,7 @@ import io.sahil.tripmanagementapp.databinding.FragmentTripsBinding
 import io.sahil.tripmanagementapp.io.TripIO
 import io.sahil.tripmanagementapp.ui.adapters.TripListAdapter
 import io.sahil.tripmanagementapp.ui.viewmodels.TripViewModel
+import java.io.File
 import java.util.jar.Manifest
 import kotlin.math.exp
 
@@ -70,11 +75,20 @@ class TripsFragment: Fragment() {
         })
         tripViewModel.toastLiveData.observe(viewLifecycleOwner, {
             it?.let {
-                Toast.makeText(fContext, it, Toast.LENGTH_LONG).show()
+                Toast.makeText(fContext, "File saved at: $it", Toast.LENGTH_LONG).show()
+                val file = File(it)
+                if (file.exists()){
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "application/json"
+                    intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(fContext, "${fContext.packageName}.provider", file))
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Share file")
+                    fContext.startActivity(Intent.createChooser(intent, "Share File"))
+                }
             }
         })
         fragmentTripsBinding.exportButton.setOnClickListener {
-            //requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             export()
         }
     }
@@ -87,17 +101,6 @@ class TripsFragment: Fragment() {
     private fun export(){
         tripViewModel.exportTrips(tripList)
     }
-
-    /*private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()){ isGranted ->
-        if (isGranted){
-            export()
-        } else {
-            Toast.makeText(fContext, "Please provide storage permission", Toast.LENGTH_SHORT).show()
-        }
-    }*/
-
-
 
 
 

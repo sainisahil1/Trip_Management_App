@@ -26,7 +26,7 @@ class TripViewModel(private val myApplication: Application): AndroidViewModel(my
     fun exportTrips(tripList: List<TripModel>){
         viewModelScope.launch(Dispatchers.IO) {
             TripIO.getInstance(myApplication).exportAllTrips(tripList).let {
-                toastLiveData.postValue("File saved to $it")
+                toastLiveData.postValue(it)
             }
         }
     }

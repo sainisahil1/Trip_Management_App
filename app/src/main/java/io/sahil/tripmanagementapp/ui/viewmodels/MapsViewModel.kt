@@ -27,7 +27,7 @@ class MapsViewModel(private val myApplication: Application): AndroidViewModel(my
     fun exportTrip(tripModel: TripModel){
         viewModelScope.launch(Dispatchers.IO) {
             TripIO.getInstance(myApplication).exportSingleTrip(tripModel).let {
-                toastLiveData.postValue("File saved to $it")
+                toastLiveData.postValue(it)
             }
         }
     }
