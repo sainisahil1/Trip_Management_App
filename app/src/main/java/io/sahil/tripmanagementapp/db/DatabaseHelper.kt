@@ -27,7 +27,6 @@ abstract class DatabaseHelper: RoomDatabase() {
             return instance!!
         } //populate this
 
-
     }
 
 }

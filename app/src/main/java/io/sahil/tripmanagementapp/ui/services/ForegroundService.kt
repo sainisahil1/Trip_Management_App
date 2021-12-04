@@ -18,7 +18,6 @@ import android.util.Log
 
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import io.sahil.tripmanagementapp.data.LocationModel
@@ -26,7 +25,7 @@ import io.sahil.tripmanagementapp.data.Trip
 import io.sahil.tripmanagementapp.data.TripModel
 import io.sahil.tripmanagementapp.db.DatabaseHelper
 import io.sahil.tripmanagementapp.utils.MyPreferences
-import io.sahil.tripmanagementapp.utils.TimeUtils
+import io.sahil.tripmanagementapp.utils.MyUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -97,6 +96,7 @@ class ForegroundService: Service() {
             val locationRequest = LocationRequest.create().apply {
                 interval = 5000
                 fastestInterval = 5000
+                smallestDisplacement = 2000F
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             }
             fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
@@ -108,6 +108,8 @@ class ForegroundService: Service() {
     }
 
     override fun onDestroy() {
+        isRunning = false
+        myPreferences.saveIsTripRunning(false)
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(receiver)
         stopForeground(true)
         stopSelf()
@@ -120,7 +122,7 @@ class ForegroundService: Service() {
             for (location in locationResult.locations){
                 location?.let {
                     if (it.accuracy < 100){
-                        val locationModel = LocationModel(it.latitude, it.longitude, TimeUtils.parseTime(Date()), it.accuracy.toDouble())
+                        val locationModel = LocationModel(it.latitude, it.longitude, MyUtils.parseTime(Date()), it.accuracy.toDouble())
                         locationArrayList.add(locationModel)
                         Log.e(tag, locationModel.toString())
                     }
@@ -136,11 +138,11 @@ class ForegroundService: Service() {
         startTracking()
         val startTime = Date()
         trip = Trip(
-            TimeUtils.parseTime(startTime),
+            MyUtils.parseTime(startTime),
             "",
             locationArrayList,
             "",
-            TimeUtils.getReadableDate(startTime),
+            MyUtils.getReadableDate(startTime),
             startTime.time,
             0L
         )
@@ -153,9 +155,9 @@ class ForegroundService: Service() {
         myPreferences.saveIsTripRunning(false)
         val endTime = Date()
         trip?.let {
-            it.endTime = TimeUtils.parseTime(endTime)
+            it.endTime = MyUtils.parseTime(endTime)
             val timeDiffInMs = endTime.time - it.startTimeStamp
-            it.tripDuration = TimeUtils.getTimeInHM(timeDiffInMs)
+            it.tripDuration = MyUtils.getTimeInHM(timeDiffInMs)
             CoroutineScope(Dispatchers.IO).launch {
                 DatabaseHelper.getInstance(applicationContext).tripDao().insertTrip(TripModel(
                     startTime = it.startTime,

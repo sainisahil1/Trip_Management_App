@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import io.sahil.tripmanagementapp.db.DataConverter
 
+
 @Entity(tableName = "trips")
 data class TripModel(
     @PrimaryKey(autoGenerate = true)

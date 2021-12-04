@@ -23,6 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:theme="@style/CardView.Light"
         android:layout_margin="@dimen/_8sdp"
+        android:id="@+id/trip_card"
         app:cardElevation="@dimen/_4sdp"
         app:cardCornerRadius="@dimen/_2sdp">
 

@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.sahil.tripmanagementapp.data.TripModel
 import io.sahil.tripmanagementapp.db.DatabaseHelper
@@ -11,25 +12,24 @@ import io.sahil.tripmanagementapp.io.TripIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TripViewModel(private val myApplication: Application): AndroidViewModel(myApplication) {
+class MapsViewModel(private val myApplication: Application): AndroidViewModel(myApplication) {
 
-    val tripListLiveData = MutableLiveData<List<TripModel>>()
+    val tripLiveData = MutableLiveData<TripModel>()
     val toastLiveData = MutableLiveData<String>()
 
-    fun fetchTrips(){
-        viewModelScope.launch(Dispatchers.IO){
+    fun fetchTrip(tripId: Long){
+        viewModelScope.launch(Dispatchers.IO) {
             val databaseHelper = DatabaseHelper.getInstance(myApplication.applicationContext)
-            tripListLiveData.postValue(databaseHelper.tripDao().getTrips())
+            tripLiveData.postValue(databaseHelper.tripDao().getTripById(tripId))
         }
     }
 
-    fun exportTrips(tripList: List<TripModel>){
+    fun exportTrip(tripModel: TripModel){
         viewModelScope.launch(Dispatchers.IO) {
-            TripIO.getInstance(myApplication).exportAllTrips(tripList).let {
+            TripIO.getInstance(myApplication).exportSingleTrip(tripModel).let {
                 toastLiveData.postValue("File saved to $it")
             }
         }
     }
-
 
 }

@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import io.sahil.tripmanagementapp.R
@@ -22,8 +21,7 @@ import io.sahil.tripmanagementapp.databinding.FragmentHomeBinding
 import io.sahil.tripmanagementapp.ui.services.ForegroundService
 import io.sahil.tripmanagementapp.ui.viewmodels.HomeViewModel
 import io.sahil.tripmanagementapp.utils.MyPreferences
-import io.sahil.tripmanagementapp.utils.TimeUtils
-import java.util.jar.Manifest
+import io.sahil.tripmanagementapp.utils.MyUtils
 
 class HomeFragment: Fragment() {
 
@@ -72,7 +70,7 @@ class HomeFragment: Fragment() {
         homeViewModel.fetchTotalDuration()
         Log.e(tag, "update trip indicator")
         if (myPreferences.getIsTripRunning()){
-            fragmentHomeBinding.tripStatusDrawable = ContextCompat.getDrawable(fContext, R.drawable.ic_location_primary)
+            fragmentHomeBinding.tripStatusDrawable = ContextCompat.getDrawable(fContext, R.drawable.ic_location_primary_accent)
             fragmentHomeBinding.tripButtonText = "Stop Trip"
         } else {
             fragmentHomeBinding.tripStatusDrawable = ContextCompat.getDrawable(fContext, R.drawable.ic_location_holo_light)
@@ -106,7 +104,7 @@ class HomeFragment: Fragment() {
         })
         homeViewModel.totalDurationLiveData.observe(viewLifecycleOwner, {
             it -> it?.let {
-                fragmentHomeBinding.userStatus.totalTime = TimeUtils.getTimeInHM(it)
+                fragmentHomeBinding.userStatus.totalTime = MyUtils.getTimeInHM(it)
         }
         })
     }

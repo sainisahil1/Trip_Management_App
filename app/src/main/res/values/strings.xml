@@ -9,4 +9,5 @@
     <string name="trip_indicator">Trip Indicator</string>
     <string name="auto_capture">Auto - Monitor Trips</string>
     <string name="empty_list">No trips found.</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

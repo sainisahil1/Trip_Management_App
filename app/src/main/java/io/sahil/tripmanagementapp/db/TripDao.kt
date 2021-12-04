@@ -22,4 +22,7 @@ interface TripDao {
     @Query("select sum(durationInMs) from trips")
     fun getTotalDuration(): Long
 
+    @Query("select * from trips where tripId=:id")
+    fun getTripById(id: Long): TripModel
+
 }

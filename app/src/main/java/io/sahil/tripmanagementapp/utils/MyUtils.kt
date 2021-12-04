@@ -4,8 +4,15 @@ import android.util.Log
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
 
-class TimeUtils {
+import android.graphics.drawable.Drawable
+
+
+
+
+class MyUtils {
 
     companion object{
 
@@ -41,6 +48,15 @@ class TimeUtils {
                 e.printStackTrace()
                 null
             }
+        }
+
+
+        fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
+            val bitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, widthPixels, heightPixels)
+            drawable.draw(canvas)
+            return bitmap
         }
 
 
